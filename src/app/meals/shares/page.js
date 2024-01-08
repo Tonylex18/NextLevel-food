@@ -1,7 +1,33 @@
-import ImagePicker from '@/components/meals/image-picker';
-import classes from './page.module.css';
+'use client';
+
+import { useFormState } from 'react-dom';
+
+import ImagePicker from "@/components/meals/image-picker";
+import classes from "./page.module.css";
+import { shareMeal } from "@/libs/action";
+import MealsFormSubmit from "@/components/meals/meals-form-submit";
 
 export default function ShareMealPage() {
+  // // server action by including the async
+  // //How to handle form submit using server action
+  // async function shareMeal(formData) {
+  //   'use server'; // a function that create a server action which guarantee to execute in the server and only there.
+
+  //   const meal = {
+  //     title: formData.get('title'),
+  //     summary: formData.get('summary'),
+  //     instructions: formData.get('instructions'),
+  //     image: formData.get('image'),
+  //     creator: formData.get('name'),
+  //     email: formData.get('email')
+  //   }
+
+  //   console.log(meal);
+  // }
+
+  const [state, formAction] = useFormState(shareMeal, { message: null });
+
+
   return (
     <>
       <header className={classes.header}>
@@ -11,7 +37,7 @@ export default function ShareMealPage() {
         <p>Or any other meal you feel needs sharing!</p>
       </header>
       <main className={classes.main}>
-        <form className={classes.form}>
+        <form className={classes.form} action={formAction}>
           <div className={classes.row}>
             <p>
               <label htmlFor="name">Your name</label>
@@ -39,9 +65,10 @@ export default function ShareMealPage() {
               required
             ></textarea>
           </p>
-         <ImagePicker />
+          <ImagePicker label="Your Image" name="image" />
+          {state.message && <p>{state.message}</p>}
           <p className={classes.actions}>
-            <button type="submit">Share Meal</button>
+            <MealsFormSubmit />
           </p>
         </form>
       </main>
